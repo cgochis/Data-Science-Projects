@@ -1,0 +1,58 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red255\green255\blue255;
+}
+{\*\expandedcolortbl;;\cssrgb\c0\c1\c1;\cssrgb\c100000\c100000\c100000\c0;\cssrgb\c100000\c100000\c99971;
+}
+\margl1440\margr1440\vieww14340\viewh18380\viewkind0
+\deftab720
+\pard\pardeftab720\sl440\partightenfactor0
+
+\f0\fs28\fsmilli14080 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec4 SELECT *\
+FROM survey\
+LIMIT 10;\
+\
+SELECT question,\
+    COUNT (DISTINCT user_id)\
+FROM survey\
+GROUP BY question;\
+\
+SELECT *\
+FROM quiz\
+LIMIT 5;\
+\
+SELECT *\
+FROM home_try_on\
+LIMIT 5;\
+\
+SELECT *\
+FROM purchase\
+LIMIT 5;\
+\
+WITH funnels AS (\
+  SELECT DISTINCT q.user_id,\
+  h.user_id as 'is_home_try_on',\
+  h.number_of_pairs,\
+  p.user_id as 'is_purchase'\
+FROM quiz as 'q'\
+LEFT JOIN home_try_on as 'h'\
+  ON h.user_id = q.user_id\
+LEFT JOIN purchase as 'p'\
+  ON p.user_id = h.user_id\
+)\
+SELECT user_id,\
+  CASE \
+    WHEN is_home_try_on IS NULL THEN 'False' \
+    ELSE 'True' \
+  END AS 'is_home_try_on',\
+  number_of_pairs,\
+  CASE \
+    WHEN is_purchase IS NULL THEN 'False' \
+    ELSE 'True' \
+  END AS 'is_purchase'\
+FROM funnels\
+GROUP BY user_id\
+LIMIT 10;\
+\
+}
